@@ -13,7 +13,7 @@
       ·
       <a href="https://fleetbase.apichecker.com" target="_api_status" rel="nofollow">API Status</a>
       ·
-      <a href="https://meetings.hubspot.com/shiv-thakker" rel="nofollow">Book a Demo</a>
+      <a href="https://tally.so/r/3NBpAW" rel="nofollow">Book a Demo</a>
       ·
       <a href="https://discord.gg/V7RVWRQ2Wm" target="discord" rel="nofollow">Discord</a>
     </p>
@@ -42,6 +42,7 @@ sh deploy.sh
 
   - [Features](#-features)
   - [Install](#-install)
+  - [Extensions](#-extensions)
   - [Apps](#-apps)
   - [Roadmap](#-roadmap)
   - [Bugs and Feature Requests](#-bugs-and--feature-requests)
@@ -90,7 +91,7 @@ Fleetbase API: http://localhost:8000
 
 **CORS:** If you’re installing directly on a server you may need to add your IP address or domain to the `api/config/cors.php` file in the `allowed_hosts` array.  
   
-**Routing:** Fleetbase ships with its own OSRM server hosted at `[bundle.routing.fleetbase.io](https://bundle.routing.fleetbase.io)` but you’re able to use your own or any other OSRM compatible server. You can modify this in the `console/environments` directory by modifying the env file of the environment you’re deploying and setting the `OSRM_HOST` to the OSRM server for Fleetbase to use.  
+**Routing:** Fleetbase ships with a default OSRM server hosted by `[router.project-osrm.org](https://router.project-osrm.org)` but you’re able to use your own or any other OSRM compatible server. You can modify this in the `console/environments` directory by modifying the .env file of the environment you’re deploying and setting the `OSRM_HOST` to the OSRM server for Fleetbase to use.  
   
 **Services:** There are a few environment variables which need to be set for Fleetbase to function with full features. If you’re deploying with docker then it’s easiest to just create a `docker-compose.override.yml` and supply the environment variables in this file.
 
@@ -100,7 +101,7 @@ services:
   application:  
     environment:  
       MAIL_MAILER: (ses, smtp, mailgun, postmark, sendgrid)
-      OSRM_HOST: https://bundle.routing.fleetbase.io
+      OSRM_HOST: https://router.project-osrm.org
       IPINFO_API_KEY:
       GOOGLE_MAPS_API_KEY:  
       GOOGLE_MAPS_LOCALE: us
@@ -112,6 +113,26 @@ services:
 
 You can learn more about full installation, and configuration in the [official documentation](https://docs.fleetbase.io/getting-started/install).
 
+# 🧩 Extensions 
+
+Extensions are modular components that enhance the functionality of your Fleetbase instance. They allow you to add new features, customize existing behavior, or integrate with external systems.
+
+You can find extensions available from the official [Fleetbase Console](https://console.fleetbase.io), here you will also be able get your registry token to install extensions to a self-hosted Fleetbase instance. 
+
+Additionally you're able to develop and publish your own extensions as well which you can read more about developing extensions via the [extension building guide](https://docs.fleetbase.io/developers/building-an-extension).
+
+## ⌨️ Fleetbase CLI 
+
+The Fleetbase CLI is a powerful tool designed to simplify the management of extensions for your Fleetbase instance. With the CLI, you can effortlessly handle authentication, install and uninstall extensions, and scaffold new extensions if you are developing your own.
+
+Get started with the CLI with npm:
+
+```bash
+npm i -g @fleetbase/cli
+```
+
+Once installed, you can access a variety of commands to manage your Fleetbase extensions.
+
 # 📱 Apps
 
 Fleetbase offers a few open sourced apps which are built on Fleetbase which can be cloned and customized. Every app is built so that the Fleetbase instance can be switched out whether on-premise install or cloud hosted.
@@ -122,13 +143,11 @@ Fleetbase offers a few open sourced apps which are built on Fleetbase which can 
 </ul>
 
 ## 🛣️ Roadmap
-1.  **Extensions Registry and Marketplace** ~ Allows users to publish and sell installable extensions on Fleetbase instances.
-2.  **Inventory and Warehouse Management** ~ Pallet will be Fleetbase’s first official extension for WMS & Inventory.
-3.  **Customer Facing Views** ~ Extensions will be able to create public/customer facing views tracking and management from outside of the console UI.
-4.  **Binary Builds** ~ Run Fleetbase from a single binary.
-5.  **Fleetbase CLI** ~ Official CLI for publishing and managing extensions, as well as scaffolding extensions.
-6.  **Fleetbase for Desktop** ~ Desktop builds for OSX and Windows.
-7. **Custom Maps and Routing Engines** ~ Feature to enable easy integrations with custom maps and routing engines like Google Maps or Mapbox etc…
+1.  **Inventory and Warehouse Management** ~ Pallet will be Fleetbase’s first official extension for WMS & Inventory.
+2.  **Accounting and Invoicing** ~ Ledger will be Fleetbase’s first official extension accounting and invoicing.
+3.  **Binary Builds** ~ Run Fleetbase from a single binary.
+4.  **Fleetbase for Desktop** ~ Desktop builds for OSX and Windows.
+5. **Custom Maps and Routing Engines** ~ Feature to enable easy integrations with custom maps and routing engines like Google Maps or Mapbox etc…
 
 ## 🪲 Bugs and 💡 Feature Requests
 
@@ -163,4 +182,4 @@ Get updates on Fleetbase's development and chat with the project maintainers and
 
 # License & Copyright
 
-Code and documentation copyright 2018–2023 the <a href="https://github.com/fleetbase/fleetbase/graphs/contributors">Fleetbase Authors</a>. Code released under the <a href="https://github.com/fleetbase/storefront-app/blob/main/LICENSE.md">MIT License</a>.
+Fleetbase is made available under the terms of the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU Affero General Public License 3.0 (AGPL 3.0)</a>. For other licenses <a href="mailto:hello@fleetbase.io" target="_blank">contact us</a>.

@@ -15,6 +15,9 @@ php artisan sandbox:migrate --force
 # Seed database
 php artisan fleetbase:seed
 
+# Create permissions, policies, and roles
+php artisan fleetbase:create-permissions
+
 # Restart queue
 php artisan queue:restart
 
@@ -23,3 +26,10 @@ php artisan schedule-monitor:sync
 
 # Clear cache
 php artisan cache:clear
+
+# Optimize
+# php artisan config:cache
+# php artisan route:cache
+
+# Initialize registry
+php artisan registry:init

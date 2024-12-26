@@ -35,4 +35,10 @@
 	branch = main
 [submodule "docs"]
 	path = docs
-	url = git@github.com:Andrus123/docs.git
+	url = git@github.com:fleetbase/docs.git
+[submodule "packages/registry-bridge"]
+	path = packages/registry-bridge
+	url = git@github.com:fleetbase/registry-bridge.git
+[submodule "packages/ledger"]
+	path = packages/ledger
+	url = git@github.com:fleetbase/ledger.git

@@ -1,5 +1,6 @@
 import Model, { attr, belongsTo } from '@ember-data/model';
 import { computed } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { format, formatDistanceToNow } from 'date-fns';
 import autoSerialize from '../utils/auto-serialize';
 
@@ -34,6 +35,7 @@ export default class Company extends Model {
     @attr('string') slug;
 
     /** @dates */
+    @attr('date') joined_at;
     @attr('date') deleted_at;
     @attr('date') created_at;
     @attr('date') updated_at;
@@ -70,5 +72,33 @@ export default class Company extends Model {
     /** @methods */
     toJSON() {
         return autoSerialize(this);
+    }
+
+    async transferOwnership(newOwner, params = {}) {
+        const owner = getOwner(this);
+        const fetch = owner.lookup('service:fetch');
+
+        return fetch.post('companies/transfer-ownership', { company: this.id, newOwner, ...params });
+    }
+
+    async leave(user = null, params = {}) {
+        const owner = getOwner(this);
+        const fetch = owner.lookup('service:fetch');
+
+        return fetch.post('companies/leave', { company: this.id, user, ...params });
+    }
+
+    async loadUsers(params = {}) {
+        const owner = getOwner(this);
+        const fetch = owner.lookup('service:fetch');
+
+        try {
+            const users = await fetch.get(`companies/${this.id}/users`, { ...params }, { normalizeToEmberData: true, normalizeModelType: 'user' });
+            this.set('users', users);
+            return users;
+        } catch (error) {
+            this.set('users', []);
+            return [];
+        }
     }
 }

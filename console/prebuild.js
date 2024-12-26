@@ -78,6 +78,8 @@ function getRouterFileContents() {
 
 (async () => {
     const extensions = await getExtensions();
+    const consoleExtensions = extensions.filter((extension) => !extension.fleetbase || extension.fleetbase.mount !== 'root');
+    const rootExtensions = extensions.filter((extension) => extension.fleetbase && extension.fleetbase.mount === 'root');
     const routerFileContents = getRouterFileContents();
     const ast = recast.parse(routerFileContents, { parser: babelParser });
 
@@ -92,10 +94,9 @@ function getRouterFileContents() {
                         functionExpression = arg;
                     }
                 });
-
                 if (functionExpression) {
                     // Check and add the new engine mounts
-                    extensions.forEach((extension) => {
+                    consoleExtensions.forEach((extension) => {
                         const mountPath = getExtensionMountPath(extension.name);
                         let route = mountPath;
 
@@ -123,8 +124,46 @@ function getRouterFileContents() {
                             );
                         }
                     });
+                }
+            }
 
-                    return false;
+            // console.log(path.value.callee.property.name);
+            if (path.value.type === 'CallExpression' && path.value.callee.property.name === 'map') {
+                let functionExpression;
+
+                path.value.arguments.forEach((arg) => {
+                    if (arg.type === 'FunctionExpression') {
+                        functionExpression = arg;
+                    }
+                });
+
+                if (functionExpression) {
+                    rootExtensions.forEach((extension) => {
+                        const mountPath = getExtensionMountPath(extension.name);
+                        let route = mountPath;
+
+                        if (extension.fleetbase && extension.fleetbase.route) {
+                            route = extension.fleetbase.route;
+                        }
+
+                        const isMounted = functionExpression.body.body.some((expressionStatement) => {
+                            return expressionStatement.expression.arguments[0].value === extension.name;
+                        });
+
+                        if (!isMounted) {
+                            functionExpression.body.body.push(
+                                builders.expressionStatement(
+                                    builders.callExpression(builders.memberExpression(builders.thisExpression(), builders.identifier('mount')), [
+                                        builders.literal(extension.name),
+                                        builders.objectExpression([
+                                            builders.property('init', builders.identifier('as'), builders.literal(route)),
+                                            builders.property('init', builders.identifier('path'), builders.literal(route)),
+                                        ]),
+                                    ])
+                                )
+                            );
+                        }
+                    });
                 }
             }
 

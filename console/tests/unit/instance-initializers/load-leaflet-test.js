@@ -1,12 +1,12 @@
 import Application from '@ember/application';
 
 import config from '@fleetbase/console/config/environment';
-import { initialize } from '@fleetbase/console/instance-initializers/register-app-version';
+import { initialize } from '@fleetbase/console/instance-initializers/load-leaflet';
 import { module, test } from 'qunit';
 import Resolver from 'ember-resolver';
 import { run } from '@ember/runloop';
 
-module('Unit | Instance Initializer | register-app-version', function (hooks) {
+module('Unit | Instance Initializer | load-leaflet', function (hooks) {
     hooks.beforeEach(function () {
         this.TestApplication = class TestApplication extends Application {
             modulePrefix = config.modulePrefix;

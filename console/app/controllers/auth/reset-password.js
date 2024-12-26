@@ -4,32 +4,9 @@ import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 
 export default class AuthResetPasswordController extends Controller {
-    /**
-     * Inject the `fetch` service
-     *
-     * @memberof AuthResetPasswordController
-     */
     @service fetch;
-
-    /**
-     * Inject the `notifications` service
-     *
-     * @memberof AuthResetPasswordController
-     */
     @service notifications;
-
-    /**
-     * Inject the `router` service
-     *
-     * @memberof AuthResetPasswordController
-     */
     @service router;
-
-    /**
-     * Inject the `intl` service
-     *
-     * @memberof AuthResetPasswordController
-     */
     @service intl;
 
     /**
@@ -52,6 +29,13 @@ export default class AuthResetPasswordController extends Controller {
      * @memberof AuthResetPasswordController
      */
     @tracked password_confirmation;
+
+    /**
+     * Query parameters.
+     *
+     * @memberof AuthResetPasswordController
+     */
+    queryParams = ['code'];
 
     /**
      * The reset password task.

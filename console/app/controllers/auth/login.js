@@ -5,53 +5,12 @@ import { action } from '@ember/object';
 import pathToRoute from '@fleetbase/ember-core/utils/path-to-route';
 
 export default class AuthLoginController extends Controller {
-    /**
-     * Inject the `forgotPassword` controller
-     *
-     * @var {Controller}
-     */
     @controller('auth.forgot-password') forgotPasswordController;
-
-    /**
-     * Inject the `notifications` service
-     *
-     * @var {Service}
-     */
     @service notifications;
-
-    /**
-     * Inject the `urlSearchParams` service
-     *
-     * @var {Service}
-     */
     @service urlSearchParams;
-
-    /**
-     * Inject the `session` service
-     *
-     * @var {Service}
-     */
     @service session;
-
-    /**
-     * Inject the `router` service
-     *
-     * @var {Service}
-     */
     @service router;
-
-    /**
-     * Inject the `intl` service
-     *
-     * @var {Service}
-     */
     @service intl;
-
-    /**
-     * Inject the `fetch` service
-     *
-     * @var {Service}
-     */
     @service fetch;
 
     /**
@@ -110,8 +69,20 @@ export default class AuthLoginController extends Controller {
      */
     @tracked failedAttempts = 0;
 
+    /**
+     * Authentication token.
+     *
+     * @memberof AuthLoginController
+     */
     @tracked token;
 
+    /**
+     * Action to login user.
+     *
+     * @param {Event} event
+     * @return {void}
+     * @memberof AuthLoginController
+     */
     @action async login(event) {
         // firefox patch
         event.preventDefault();
@@ -166,6 +137,11 @@ export default class AuthLoginController extends Controller {
                 return this.sendUserForEmailVerification(identity);
             }
 
+            // Handle password reset required
+            if (error.toString().includes('reset required')) {
+                return this.sendUserForPasswordReset(identity);
+            }
+
             return this.failure(error);
         }
 
@@ -207,6 +183,20 @@ export default class AuthLoginController extends Controller {
                     this.reset('error');
                 });
             });
+        });
+    }
+
+    /**
+     * Sends user to forgot password flow.
+     *
+     * @param {String} email
+     * @return {Promise<Transition>}
+     * @memberof AuthLoginController
+     */
+    @action sendUserForPasswordReset(email) {
+        this.notifications.warning(this.intl.t('auth.login.password-reset-required'));
+        return this.router.transitionTo('auth.forgot-password', { queryParams: { email } }).then(() => {
+            this.reset('error');
         });
     }
 

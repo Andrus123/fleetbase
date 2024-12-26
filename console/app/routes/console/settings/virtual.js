@@ -4,7 +4,14 @@ import { inject as service } from '@ember/service';
 export default class ConsoleSettingsVirtualRoute extends Route {
     @service universe;
 
-    model({ slug, view }) {
-        return this.universe.lookupMenuItemFromRegistry('settings', slug, view);
+    queryParams = {
+        view: {
+            refreshModel: true,
+        },
+    };
+
+    model({ slug }, transition) {
+        const view = this.universe.getViewFromTransition(transition);
+        return this.universe.lookupMenuItemFromRegistry('console:settings', slug, view);
     }
 }

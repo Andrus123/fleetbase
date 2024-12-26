@@ -109,13 +109,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 9.5.0
           run_install: false
 
       - name: Get pnpm Store Directory
@@ -132,11 +132,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Check for _GITHUB_AUTH_TOKEN and create .npmrc
+      - name: Create and Setup .npmrc
         run: |
           if [[ -n "${{ secrets._GITHUB_AUTH_TOKEN }}" ]]; then
             echo "//npm.pkg.github.com/:_authToken=${{ secrets._GITHUB_AUTH_TOKEN }}" > .npmrc
           fi
+          if [[ -n "${{ secrets.FLEETBASE_REGISTRY_TOKEN }}" ]]; then
+            echo "//registry.fleetbase.io/:_authToken=${{ secrets.FLEETBASE_REGISTRY_TOKEN }}" >> .npmrc
+            echo "@fleetbase:registry=https://registry.fleetbase.io" >> .npmrc
+          fi
+        working-directory: ./console
+
+      - name: Set Env Variables for QA
+        if: startsWith(github.ref, 'refs/heads/deploy/qa')
+        run: |
+          echo "STRIPE_KEY=${{ secrets.STRIPE_TEST_KEY }}" >> ./environments/.env.production
+          echo "LOGROCKET_APP_ID=${{ secrets.LOGROCKET_APP_ID }}" >> ./environments/.env.production
+          echo "EXTENSIONS=@fleetbase/billing-engine,@fleetbase/internals-engine" >> ./environments/.env.production
+        working-directory: ./console
+
+      - name: Set Env Variables for Production
+        if: startsWith(github.ref, 'refs/heads/deploy/production')
+        run: |
+          echo "STRIPE_KEY=${{ secrets.STRIPE_KEY }}" >> ./environments/.env.production
+          echo "LOGROCKET_APP_ID=${{ secrets.LOGROCKET_APP_ID }}" >> ./environments/.env.production
+          echo "EXTENSIONS=@fleetbase/billing-engine,@fleetbase/internals-engine" >> ./environments/.env.production
         working-directory: ./console
 
       - name: Install dependencies
